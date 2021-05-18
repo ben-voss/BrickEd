@@ -35,5 +35,14 @@ module.exports = {
       args[0].title = "BrickEd";
       return args;
     });
+  },
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        appId: "bricked",
+        productName: "BrickEd"
+      },
+      publish: "never"
+    }
   }
 };
