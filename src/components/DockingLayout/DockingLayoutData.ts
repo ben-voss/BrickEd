@@ -1,6 +1,5 @@
 import { GroupProps } from "./Props/GroupProps";
 import { FloatingGroupProps } from "./Props/FloatingGroupProps";
-import { OrientationType } from "./DockingLayoutGroupConfig";
 
 export interface DockingLayoutData {
   group: GroupProps;
