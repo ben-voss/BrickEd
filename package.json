@@ -13,7 +13,9 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "peg-color": "pegjs --plugin ts-pegjs --format commonjs --extra-options-file pegconfig.json -o  src/app/files/LdrColorGrammar.ts src/app/files/LdrColorGrammar.pegjs",
+    "peg-model": "pegjs --plugin ts-pegjs --format commonjs --extra-options-file pegconfig.json -o  src/app/files/LdrModelGrammar.ts src/app/files/LdrModelGrammar.pegjs"
   },
   "main": "background.js",
   "dependencies": {
@@ -45,12 +47,14 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0",
     "node-sass": "^4.12.0",
+    "pegjs": "^0.10.0",
     "postcss": "^8.2.15",
     "prettier": "^2.2.1",
     "sass-loader": "^8.0.2",
     "spectron": "14.0.0",
     "svg-sprite-loader": "^6.0.6",
     "svgo-loader": "^3.0.0",
+    "ts-pegjs": "^0.3.1",
     "typescript": "~4.1.5",
     "vue-cli-plugin-electron-builder": "~2.0.0",
     "vue-jest": "^5.0.0-0",

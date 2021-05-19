@@ -1,0 +1,6 @@
+{
+  "tspegjs": {
+      "noTslint": false,
+      "customHeader": "/* eslint-disable */ import { Vector3, Matrix4 } from 'three';"
+  }
+}
