@@ -42,7 +42,8 @@ module.exports = {
         appId: "bricked",
         productName: "BrickEd"
       },
-      publish: "never"
+      publish: "never",
+      preload: "src/preload.js"
     }
   }
 };

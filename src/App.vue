@@ -1,5 +1,5 @@
 <template>
-  <div v-on:contextMenu="$event.preventDefault()">
+  <div v-on:ccontextMenu="$event.preventDefault()">
     <dockingLayout :config="config">
       <template v-slot:HelloWorld>
         <HelloWorld />
@@ -16,6 +16,8 @@ import { Options, Vue } from "vue-class-component";
 import HelloWorld from "./components/HelloWorld.vue";
 import HiThere from "./components/HiThere.vue";
 import DockingLayout from "./components/DockingLayout/DockingLayout.vue";
+import { LazyInject, Symbols } from "./di";
+import LdrColorLoader from "./app/files/LdrColorLoader";
 
 @Options({
   components: {
@@ -71,6 +73,19 @@ export default class App extends Vue {
       ]
     }
   };
+
+  @LazyInject(Symbols.LdrColorLoader)
+  private ldrColorLoader!: LdrColorLoader;
+
+  async beforeMount(): Promise<void> {
+    // Indicate to the main process that the window is ready to receive IPC messages.
+    window.ipcRenderer.send("READY");
+
+    // Load the color config
+    const colors = await this.ldrColorLoader.load("library/LDConfig.ldr");
+
+    console.log(colors.length);
+  }
 }
 </script>
 
