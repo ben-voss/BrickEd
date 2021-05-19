@@ -221,8 +221,6 @@ export class DockedResize extends Interaction {
       return;
     }
 
-    console.assert(this._sizePanelIndex >= 0);
-
     const group = this._captureGroup.item as GroupProps;
     const groupBounds = this._captureGroup.bounds;
 
