@@ -364,9 +364,21 @@ Vector3
     }
 
 Color
-	= [0-9]+ {
-    	return parseInt(text())
+	= x:HexColor / x:IntColor {
+    	return x
     }
+    
+IntColor
+	= [0-9]+ {
+		return { num: parseInt(text(), 10) }
+	}
+
+HexColor
+	= '0x2'$(HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit) {
+    	return { direct: parseInt(text(), 16) }
+}
+
+HexDigit = [0-9A-F]
 
 Float
 	= [-+]*[0-9]*[.]*[0-9]* {
