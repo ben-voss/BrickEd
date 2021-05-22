@@ -17,4 +17,6 @@ export default interface Api {
   setRepresentedFilename(fileName: string | null): Promise<void>;
 
   readFileAsync(fileName: string): Promise<string>;
+
+  fileExistsAsync(fileName: string): Promise<boolean>;
 }

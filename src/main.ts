@@ -10,6 +10,9 @@ import container, { Symbols } from "./di";
 import RpcClient from "./rpc/RpcClient";
 import RpcApi from "./api/RpcApi";
 import LdrColorLoader from "./app/files/LdrColorLoader";
+import OpenCommand from "./app/commands/OpenCommand";
+import LdrModelLoader from "./app/files/LdrModelLoader";
+import Settings from "./app/settings/Settings";
 
 declare global {
   interface Window {
@@ -22,5 +25,13 @@ container.bind(Symbols.RpcClient).toConstantValue(new RpcClient("MAIN"));
 
 container.bind(Symbols.Api).to(RpcApi).inSingletonScope();
 container.bind(Symbols.LdrColorLoader).to(LdrColorLoader).inSingletonScope();
+container.bind(Symbols.LdrModelLoader).to(LdrModelLoader).inSingletonScope();
+container.bind(Symbols.Settings).to(Settings).inSingletonScope();
 
+container.bind(Symbols.OpenCommand).to(OpenCommand).inSingletonScope();
+
+// Activate the commands so they can hook the IPC message handlers
+container.get(Symbols.OpenCommand);
+
+// Create the UI
 createApp(App).use(store).mount("#app");

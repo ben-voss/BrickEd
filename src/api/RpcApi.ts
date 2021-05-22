@@ -40,4 +40,8 @@ export default class RpcApi implements Api {
   public readFileAsync(fileName: string): Promise<string> {
     return this.rpcClient.call("readFileAsync", fileName);
   }
+
+  public fileExistsAsync(fileName: string): Promise<boolean> {
+    return this.rpcClient.call("fileExistsAsync", fileName);
+  }
 }

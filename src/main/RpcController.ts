@@ -7,6 +7,7 @@ import MessageBoxOptions from "@/api/MessageBoxOptions";
 
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
+const fileExistsAsync = util.promisify(fs.exists);
 
 export default class RpcController {
   private rpcServer: RpcServer;
@@ -32,7 +33,9 @@ export default class RpcController {
         fileName: string
       ) => await this.setRepresentedFilename(browserWindow, fileName),
       readFileAsync: async (browserWindow: BrowserWindow, fileName: string) =>
-        (await readFileAsync(fileName)).toString()
+        (await readFileAsync(fileName)).toString(),
+      fileExistsAsync: async (browserWindow: BrowserWindow, fileName: string) =>
+        await fileExistsAsync(fileName)
     };
 
     this.rpcServer = new RpcServer(functions, "MAIN");
@@ -56,7 +59,7 @@ export default class RpcController {
   ): Promise<{ name: string; content: string } | null> {
     const r = await dialog.showOpenDialog(browserWindow, {
       properties: ["openFile"],
-      filters: [{ name: "Query Files", extensions: ["sql"] }]
+      filters: [{ name: "Model Files", extensions: ["ldr"] }]
     });
 
     if (r.canceled || r.filePaths.length === 0) {
@@ -78,7 +81,7 @@ export default class RpcController {
   ): Promise<string | null> {
     const result = await dialog.showSaveDialog(browserWindow, {
       properties: [],
-      filters: [{ name: "Query Files", extensions: [contentType] }]
+      filters: [{ name: "Model Files", extensions: [contentType] }]
     });
 
     if (result.canceled || !result.filePath) {

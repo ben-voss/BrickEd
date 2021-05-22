@@ -208,7 +208,7 @@ export default class MainProcess {
               // Invoke the operating system file open dialog
               const r = await dialog.showOpenDialog(browserWindow, {
                 properties: ["openFile"],
-                filters: [{ name: "Query Files", extensions: ["sql"] }]
+                filters: [{ name: "Model Files", extensions: ["ldr"] }]
               });
 
               if (r.canceled || r.filePaths.length === 0) {

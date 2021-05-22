@@ -10,5 +10,9 @@ export default container;
 export const Symbols = {
   RpcClient: Symbol.for("RpcClient"),
   Api: Symbol.for("Api"),
-  LdrColorLoader: Symbol.for("LdrColorLoader")
+  LdrColorLoader: Symbol.for("LdrColorLoader"),
+  LdrModelLoader: Symbol.for("LdrModelLoader"),
+  Settings: Symbol.for("Settings"),
+
+  OpenCommand: Symbol.for("OpenCommand")
 };
