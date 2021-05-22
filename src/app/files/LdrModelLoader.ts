@@ -4,7 +4,7 @@ import PartCommand from "./PartCommand";
 import { inject, injectable } from "inversify";
 import { Symbols } from "@/di";
 import Api from "@/api/Api";
-import Settings from "../settings/settings";
+import Settings from "../settings/Settings";
 
 @injectable()
 export default class LdrModelLoader {
