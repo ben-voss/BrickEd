@@ -23,8 +23,23 @@ Title
   	return c
   }
   
+NewLine
+	= "\n"
+
+CarrageReturn
+	= "\r"
+
+Whitespace
+	= Space / Tab
+
+Space
+	= " "
+
+Tab
+	= "\t"
+
 Command
-  = (!("0" _ "NOFILE")) [ \t]* c:(CommentCommand / PartLine / LineCommand / TriangleCommand / QuadCommand / OptionalLineCommand) {
+  = (!("0" _ "NOFILE")) [ \t]* c:(CommentCommand / PartLine / LineCommand / TriangleCommand / QuadCommand / OptionalLineCommand) (Whitespace / CarrageReturn / NewLine)* {
   	return c;
   }
   
@@ -97,7 +112,7 @@ Author
   }
 
 SlashComment
-  = "//" _ c:CommentText {
+  = ("--" / "//") _* c:CommentText {
   	return {
 			subType: "COMMENT",
 				hasSlashes: true,
