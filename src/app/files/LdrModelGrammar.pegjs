@@ -378,12 +378,41 @@ HexColor
     	return { direct: parseInt(text(), 16) }
 }
 
-HexDigit = [0-9A-F]
+HexDigit
+	= [0-9A-F]
 
 Float
-	= [-+]*[0-9]*[.]*[0-9]* {
-    	return parseFloat(text());
-    }
+    = (Minus? Int? Frac? Exp?) / Int { return parseFloat(text()); }
+
+DecimalPoint
+    = "."
+
+Digit1_9
+    = [1-9]
+
+e
+    = [eE]
+
+Exp
+    = e (Minus / Plus)? Digit+
+
+Frac
+    = DecimalPoint Digit+
+
+Int
+    = Zero / (Digit1_9 Digit*)
+
+Minus
+    = "-"
+
+Plus
+    = "+"
+
+Zero
+    = "0"
+
+Digit
+	= [0-9]
 
 File
 	= [ 0-9a-zA-Z_.\\-]* {
