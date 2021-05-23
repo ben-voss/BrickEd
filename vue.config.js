@@ -28,6 +28,9 @@ function configSVGIcon(config) {
 }
 
 module.exports = {
+  configureWebpack: {
+    devtool: "source-map"
+  },
   chainWebpack: (config) => {
     configSVGIcon(config);
 
