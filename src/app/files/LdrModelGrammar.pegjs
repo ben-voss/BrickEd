@@ -412,7 +412,7 @@ Exp
     = e (Minus / Plus)? Digit+
 
 Frac
-    = DecimalPoint Digit+
+    = DecimalPoint Digit*
 
 Int
     = Zero / (Digit1_9 Digit*)

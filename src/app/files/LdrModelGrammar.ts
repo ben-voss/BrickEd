@@ -2974,13 +2974,9 @@ function peg$parse(input: string, options?: IParseOptions) {
     if (s1 as any !== peg$FAILED) {
       s2 = [];
       s3 = peg$parseDigit();
-      if (s3 as any !== peg$FAILED) {
-        while (s3 as any !== peg$FAILED) {
-          s2.push(s3);
-          s3 = peg$parseDigit();
-        }
-      } else {
-        s2 = peg$FAILED;
+      while (s3 as any !== peg$FAILED) {
+        s2.push(s3);
+        s3 = peg$parseDigit();
       }
       if (s2 as any !== peg$FAILED) {
         s1 = [s1, s2];
