@@ -420,7 +420,7 @@ Frac
     = DecimalPoint Digit*
 
 Int
-    = Zero / (Digit1_9 Digit*)
+    = Zero+ / (Digit1_9 Digit*)
 
 Minus
     = "-"

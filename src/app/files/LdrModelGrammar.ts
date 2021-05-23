@@ -3099,7 +3099,16 @@ function peg$parse(input: string, options?: IParseOptions) {
   function peg$parseInt(): any {
     let s0, s1, s2, s3;
 
-    s0 = peg$parseZero();
+    s0 = [];
+    s1 = peg$parseZero();
+    if (s1 as any !== peg$FAILED) {
+      while (s1 as any !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$parseZero();
+      }
+    } else {
+      s0 = peg$FAILED;
+    }
     if (s0 as any === peg$FAILED) {
       s0 = peg$currPos;
       s1 = peg$parseDigit1_9();
