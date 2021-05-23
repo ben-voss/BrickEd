@@ -46,7 +46,7 @@ export default class MainProcess {
     // Exit cleanly on request from parent process in development mode.
     if (isDevelopment) {
       if (process.platform === "win32") {
-        process.on("message", data => {
+        process.on("message", (data) => {
           if (data === "graceful-exit") {
             app.quit();
           }
@@ -60,7 +60,7 @@ export default class MainProcess {
 
     // Setup a listener for the event that indicates the browser windows ipc listener
     // is hooked up and ready to receive.
-    ipcMain.on("READY", event => {
+    ipcMain.on("READY", (event) => {
       const id = event.sender.id;
 
       for (const window of this.windows) {
