@@ -59,27 +59,27 @@ NormalComment
     }
     
 PartLine
-	= '1' _ x:Part EOL {
+	= '1' _ x:Part TrailingComment* EOL {
 	    return x;
    }
 
 LineCommand
-	= '2' _ x:Line EOL {
+	= '2' _ x:Line TrailingComment* EOL {
 	    return x;
    }
 
 TriangleCommand
-	= '3' _ x:Triangle EOL {
+	= '3' _ x:Triangle TrailingComment* EOL {
 	    return x;
    }
 
 QuadCommand
-	= '4' _ x:Quad EOL {
+	= '4' _ x:Quad TrailingComment* EOL {
     	return x;
     }
     
 OptionalLineCommand
-	= '5' _ x:OptionalLine EOL {
+	= '5' _ x:OptionalLine TrailingComment* EOL {
     	return x;
     }
 
@@ -87,6 +87,9 @@ CommentMeta
   = n:SlashComment / n:Name / n:Author / n:Meta / n:Bfc / n:Step / n:Print / n:Write / n:Clear / n:Pause / n:Save / n:Comment {
   	return n;
   }
+
+TrailingComment
+	= "//".*
 
 NoComment
 	= '' {
@@ -397,7 +400,9 @@ HexDigit
 	= [0-9A-F]
 
 Float
-    = (Minus? Int? Frac? Exp?) / Int { return parseFloat(text()); }
+    = ((Minus? Int? Frac? Exp?) / Int) {
+		return parseFloat(text());
+	}
 
 DecimalPoint
     = "."
