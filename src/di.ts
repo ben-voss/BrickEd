@@ -12,6 +12,7 @@ export const Symbols = {
   Api: Symbol.for("Api"),
   LdrColorLoader: Symbol.for("LdrColorLoader"),
   LdrModelLoader: Symbol.for("LdrModelLoader"),
+  LdrModelWriter: Symbol.for("LdrModelWriter"),
   Settings: Symbol.for("Settings"),
 
   OpenCommand: Symbol.for("OpenCommand")

@@ -13,6 +13,7 @@ import LdrColorLoader from "./app/files/LdrColorLoader";
 import OpenCommand from "./app/commands/OpenCommand";
 import LdrModelLoader from "./app/files/LdrModelLoader";
 import Settings from "./app/settings/Settings";
+import LdrModelWriter from "./app/files/LdrModelWriter";
 
 declare global {
   interface Window {
@@ -26,6 +27,7 @@ container.bind(Symbols.RpcClient).toConstantValue(new RpcClient("MAIN"));
 container.bind(Symbols.Api).to(RpcApi).inSingletonScope();
 container.bind(Symbols.LdrColorLoader).to(LdrColorLoader).inSingletonScope();
 container.bind(Symbols.LdrModelLoader).to(LdrModelLoader).inSingletonScope();
+container.bind(Symbols.LdrModelWriter).to(LdrModelWriter).inSingletonScope();
 container.bind(Symbols.Settings).to(Settings).inSingletonScope();
 
 container.bind(Symbols.OpenCommand).to(OpenCommand).inSingletonScope();
