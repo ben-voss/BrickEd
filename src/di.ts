@@ -15,5 +15,6 @@ export const Symbols = {
   LdrModelWriter: Symbol.for("LdrModelWriter"),
   Settings: Symbol.for("Settings"),
 
-  OpenCommand: Symbol.for("OpenCommand")
+  OpenCommand: Symbol.for("OpenCommand"),
+  SaveCommand: Symbol.for("SaveCommand")
 };

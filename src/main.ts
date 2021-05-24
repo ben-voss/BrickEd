@@ -14,6 +14,7 @@ import OpenCommand from "./app/commands/OpenCommand";
 import LdrModelLoader from "./app/files/LdrModelLoader";
 import Settings from "./app/settings/Settings";
 import LdrModelWriter from "./app/files/LdrModelWriter";
+import SaveCommand from "./app/commands/SaveCommand";
 
 declare global {
   interface Window {
@@ -31,9 +32,11 @@ container.bind(Symbols.LdrModelWriter).to(LdrModelWriter).inSingletonScope();
 container.bind(Symbols.Settings).to(Settings).inSingletonScope();
 
 container.bind(Symbols.OpenCommand).to(OpenCommand).inSingletonScope();
+container.bind(Symbols.SaveCommand).to(SaveCommand).inSingletonScope();
 
 // Activate the commands so they can hook the IPC message handlers
 container.get(Symbols.OpenCommand);
+container.get(Symbols.SaveCommand);
 
 // Create the UI
 createApp(App).use(store).mount("#app");
