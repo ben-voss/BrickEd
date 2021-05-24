@@ -6,8 +6,6 @@ export default abstract class BaseCommand {
   public title: string;
   public icon: string;
 
-  private lastValue: boolean | undefined = undefined;
-
   constructor(
     @unmanaged() id: string,
     @unmanaged() title: string,
@@ -26,15 +24,7 @@ export default abstract class BaseCommand {
   }
 
   public get disabled(): boolean {
-    const value = this.isDisabled;
-
-    if (value != this.lastValue) {
-      this.lastValue = value;
-
-      window.ipcRenderer.send("MENU", this.id, value);
-    }
-
-    return value;
+    return this.isDisabled;
   }
 
   protected abstract get isDisabled(): boolean;

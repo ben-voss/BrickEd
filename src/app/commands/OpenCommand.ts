@@ -4,19 +4,24 @@ import { inject, injectable } from "inversify";
 import { Symbols } from "@/di";
 import Api from "@/api/Api";
 import LdrModelLoader from "../files/LdrModelLoader";
+import { Store } from "vuex";
+import AppState from "@/store/AppState";
 
 @injectable()
 export default class OpenCommand extends BaseCommand implements Command {
   private readonly api: Api;
+  private readonly store: Store<AppState>;
   private readonly ldrModelLoader: LdrModelLoader;
 
   constructor(
     @inject(Symbols.Api) api: Api,
+    @inject(Symbols.Store) store: Store<AppState>,
     @inject(Symbols.LdrModelLoader) ldrModelLoader: LdrModelLoader
   ) {
     super("open", "Open", "");
 
     this.api = api;
+    this.store = store;
     this.ldrModelLoader = ldrModelLoader;
   }
 
@@ -35,9 +40,13 @@ export default class OpenCommand extends BaseCommand implements Command {
   }
 
   private async openFile(fileName: string, content: string): Promise<void> {
-    const models = await this.ldrModelLoader.loadString(fileName, content);
+    const modelPromise = this.ldrModelLoader.loadString(fileName, content);
 
-    console.log(models.length);
+    this.store.dispatch("document/dirty", { dirty: false });
+    this.store.dispatch("document/setFileName", { fileName: fileName });
+    this.api.setRepresentedFilename(fileName);
+
+    this.store.dispatch("document/setModel", { model: await modelPromise });
   }
 
   public get isDisabled(): boolean {

@@ -14,6 +14,8 @@ export const Symbols = {
   LdrModelLoader: Symbol.for("LdrModelLoader"),
   LdrModelWriter: Symbol.for("LdrModelWriter"),
   Settings: Symbol.for("Settings"),
+  Store: Symbol.for("Store"),
+  DocumentState: Symbol.for("DocumentState"),
 
   OpenCommand: Symbol.for("OpenCommand"),
   SaveCommand: Symbol.for("SaveCommand")
