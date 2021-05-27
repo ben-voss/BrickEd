@@ -25,7 +25,7 @@ export default class SaveCommand extends BaseCommand implements Command {
     this.ldrModelWriter = ldrModelWriter;
 
     this.store.watch(
-      (state) => state.document.dirty,
+      (state) => state.document.isDirty,
       (newValue) => {
         console.log("Save state change:" + newValue);
         window.ipcRenderer.send("MENU", this.id, newValue);
@@ -34,7 +34,7 @@ export default class SaveCommand extends BaseCommand implements Command {
   }
 
   public get isDisabled(): boolean {
-    return !this.store.state.document.dirty;
+    return !this.store.state.document.isDirty;
   }
 
   public async action(): Promise<void> {

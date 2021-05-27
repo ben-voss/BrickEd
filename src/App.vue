@@ -4,8 +4,8 @@
       <template v-slot:HelloWorld>
         <HelloWorld />
       </template>
-      <template v-slot:HiThere>
-        <HiThere />
+      <template v-slot:ModelPanel>
+        <ModelPanel />
       </template>
     </dockingLayout>
   </div>
@@ -14,16 +14,16 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import HelloWorld from "./components/HelloWorld.vue";
-import HiThere from "./components/HiThere.vue";
 import DockingLayout from "./components/DockingLayout/DockingLayout.vue";
 import { LazyInject, Symbols } from "./di";
 import LdrColorLoader from "./app/files/LdrColorLoader";
+import ModelPanel from "./components/ModelPanel.vue";
 
 @Options({
   components: {
     DockingLayout,
     HelloWorld,
-    HiThere
+    ModelPanel
   }
 })
 export default class App extends Vue {
@@ -50,14 +50,14 @@ export default class App extends Vue {
               items: [
                 {
                   type: "layoutPanel",
-                  title: "Panel B",
+                  title: "Model",
                   width: 75,
-                  slot: "HelloWorld"
+                  slot: "ModelPanel"
                 },
                 {
                   type: "layoutPanel",
                   title: "Panel C",
-                  slot: "HiThere",
+                  slot: "HelloWorld",
                   width: 25
                 }
               ]
@@ -80,11 +80,6 @@ export default class App extends Vue {
   async beforeMount(): Promise<void> {
     // Indicate to the main process that the window is ready to receive IPC messages.
     window.ipcRenderer.send("READY");
-
-    // Load the color config
-    const colors = await this.ldrColorLoader.load("library/LDConfig.ldr");
-
-    console.log(colors.length);
   }
 }
 </script>

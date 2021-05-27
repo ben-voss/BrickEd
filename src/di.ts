@@ -16,6 +16,8 @@ export const Symbols = {
   Settings: Symbol.for("Settings"),
   Store: Symbol.for("Store"),
   DocumentState: Symbol.for("DocumentState"),
+  ColorManager: Symbol.for("ColorManager"),
+  RenderModelFactory: Symbol.for("RenderModelFactory"),
 
   OpenCommand: Symbol.for("OpenCommand"),
   SaveCommand: Symbol.for("SaveCommand")
