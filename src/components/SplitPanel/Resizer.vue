@@ -70,27 +70,20 @@ export default class Resizer extends Vue {
 
     if (this.splitTo === "rows") {
       tmpStyle.height = this.resizerTotalThickness + "px";
-      tmpStyle.margin = "-" + this.margin + "px 0";
-      tmpStyle.padding = "0 " + this.resizerBorderThickness + "px";
+      tmpStyle.margin = `-${this.margin}px 0`;
+      tmpStyle.padding = `0 ${this.resizerBorderThickness}px`;
     } else {
       tmpStyle.width = this.resizerTotalThickness + "px";
-      tmpStyle.margin = "0 " + "-" + this.margin + "px";
+      tmpStyle.margin = `0 -${this.margin}px`;
       tmpStyle.padding = this.resizerBorderThickness + "px 0";
     }
+this.isMouseOver = true;
+    const style =
+      (this.isMouseOver ? this.resizerBorderColor : "transparent") +
+      ` solid ${this.resizerBorderThickness}px`;
 
-    if (this.isMouseOver) {
-      tmpStyle[`border-${this.rBorder.border1}`] = tmpStyle[
-        `border-${this.rBorder.border2}`
-      ] =
-        this.resizerBorderColor +
-        " solid " +
-        this.resizerBorderThickness +
-        "px";
-    } else {
-      tmpStyle[`border-${this.rBorder.border1}`] = tmpStyle[
-        `border-${this.rBorder.border2}`
-      ] = "transparent solid " + this.resizerBorderThickness + "px";
-    }
+    tmpStyle[`border-${this.rBorder.border1}`] = style;
+    tmpStyle[`border-${this.rBorder.border2}`] = style;
 
     return tmpStyle;
   }

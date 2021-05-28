@@ -25,7 +25,7 @@
     ></Resizer>
     <Panel
       ref="panel2"
-      :class="{ columns: splitTo === 'columns', rows: splitTo === 'rows' }"
+      :class="{ column: splitTo === 'columns', row: splitTo === 'rows' }"
       :style="iStyleSecond()"
     >
       <slot name="secondPanel"></slot>
@@ -66,7 +66,7 @@ export default class SplitPanel extends Vue {
 
   @Prop({
     type: Number,
-    default: 16
+    default: 17
   })
   public size!: number; // pixels || percents
 
@@ -90,7 +90,7 @@ export default class SplitPanel extends Vue {
 
   @Prop({
     type: Number,
-    default: 0
+    default: 1
   })
   public step!: number; // pixels only
 
