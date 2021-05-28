@@ -298,7 +298,7 @@ export default class RenderModelFactory {
           }
 
           const lineColor =
-            lineCommand.color === 24
+            lineCommand.color.num === 24
               ? ldrColor
               : await this.colorManager.resolveColor(lineCommand.color);
 
@@ -332,7 +332,7 @@ export default class RenderModelFactory {
             }*/
 
           const triangleColor =
-            triangleCommand.color === 16
+            triangleCommand.color.num === 16
               ? ldrColor
               : await this.colorManager.resolveColor(triangleCommand.color);
 
@@ -376,7 +376,7 @@ export default class RenderModelFactory {
           }
 
           const quadColor =
-            quadCommand.color === 16
+            quadCommand.color.num === 16
               ? ldrColor
               : await this.colorManager.resolveColor(quadCommand.color);
 
@@ -428,7 +428,7 @@ export default class RenderModelFactory {
           }
 
           const optionalLineColor =
-            optionalLineCommand.color === 24
+            optionalLineCommand.color.num === 24
               ? ldrColor
               : await this.colorManager.resolveColor(optionalLineCommand.color);
 
