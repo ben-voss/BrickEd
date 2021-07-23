@@ -27,7 +27,7 @@ import partsListStateFactory, {
 } from "./store/modules/PartsListState";
 import ColorManager from "./app/ColorManager";
 import RenderModelFactory from "./app/RenderModelFactory";
-import PartTreeFactory from "./app/partTree/partTreeFactory";
+import PartTreeFactory from "./app/partTree/PartTreeFactory";
 
 declare global {
   interface Window {
