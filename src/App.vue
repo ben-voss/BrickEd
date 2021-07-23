@@ -7,6 +7,12 @@
       <template v-slot:ModelPanel>
         <ModelPanel />
       </template>
+      <template v-slot:ModelView>
+        <ModelView />
+      </template>
+      <template v-slot:PartLibraryPanel>
+        <PartLibraryPanel />
+      </template>
     </dockingLayout>
   </div>
 </template>
@@ -15,15 +21,17 @@
 import { Options, Vue } from "vue-class-component";
 import HelloWorld from "./components/HelloWorld.vue";
 import DockingLayout from "./components/DockingLayout/DockingLayout.vue";
-import { LazyInject, Symbols } from "./di";
-import LdrColorLoader from "./app/files/LdrColorLoader";
 import ModelPanel from "./components/ModelPanel.vue";
+import ModelView from "./components/ModelView/ModelView.vue";
+import PartLibraryPanel from "./components/PartLibrary/PartLibraryPanel.vue";
 
 @Options({
   components: {
     DockingLayout,
     HelloWorld,
-    ModelPanel
+    ModelPanel,
+    ModelView,
+    PartLibraryPanel
   }
 })
 export default class App extends Vue {
@@ -36,7 +44,7 @@ export default class App extends Vue {
           type: "layoutPanel",
           title: "Panel A",
           width: 10,
-          slot: "HelloWorld"
+          slot: "ModelView"
         },
         {
           type: "layoutGroup",
@@ -56,8 +64,8 @@ export default class App extends Vue {
                 },
                 {
                   type: "layoutPanel",
-                  title: "Panel C",
-                  slot: "HelloWorld",
+                  title: "Parts Library",
+                  slot: "PartLibraryPanel",
                   width: 25
                 }
               ]
@@ -73,9 +81,6 @@ export default class App extends Vue {
       ]
     }
   };
-
-  @LazyInject(Symbols.LdrColorLoader)
-  private ldrColorLoader!: LdrColorLoader;
 
   async beforeMount(): Promise<void> {
     // Indicate to the main process that the window is ready to receive IPC messages.

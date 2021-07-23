@@ -1,5 +1,7 @@
+import LdrColor from "@/app/files/LdrColor";
 import Model from "@/app/files/Model";
 import PartDrawList from "@/app/PartDrawList";
+import PartInfo from "@/app/partIndex/PartInfo";
 import RenderModel from "@/app/RenderModel";
 import { Matrix4, Vector3 } from "three";
 import { markRaw } from "vue";
@@ -13,6 +15,8 @@ export interface DocumentState {
   renderModel: RenderModel | null;
   selection: PartDrawList[];
   selectionCentre: Vector3;
+  selectedPart: PartInfo[];
+  selectedColor: LdrColor;
 }
 
 export default function documentStateFactory(): Module<
@@ -27,7 +31,9 @@ export default function documentStateFactory(): Module<
       model: [],
       renderModel: null,
       selection: [],
-      selectionCentre: markRaw(new Vector3())
+      selectionCentre: markRaw(new Vector3()),
+      selectedPart: [],
+      selectedColor: { name: "", code: 4, value: 4, edge: 1 }
     },
     mutations: {
       setFileName(state, fileName: string): void {

@@ -27,7 +27,6 @@
 <script lang="ts">
 import { Prop, Watch } from "vue-property-decorator";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import SvgIcon from "@/components/SvgIcon.vue";
 import { Action, State } from "s-vuex-class";
 import PartDrawList from "@/app/PartDrawList";
 import {
@@ -57,11 +56,7 @@ import RenderModel from "@/app/RenderModel";
 export type InteractionMode = "select" | "rotate" | "pan" | "centre";
 export type GridSize = "large" | "medium" | "small";
 
-@Options({
-  components: {
-    SvgIcon
-  }
-})
+@Options({})
 export default class CameraPanel extends Vue {
   // x=-30.976, y=40.609, z=21.342
   // eslint-disable-next-line prettier/prettier
@@ -175,7 +170,7 @@ export default class CameraPanel extends Vue {
   created(): void {
     this.renderQueued = false;
     this.controls = null;
-    this.camera = markRaw(new OrthographicCamera(-1, 1, 1, -1, 0, 6000));
+    this.camera = markRaw(new OrthographicCamera(-1, 1, 1, -1, -6000, 6000));
     this.renderer = markRaw(new WebGLRenderer({ antialias: true }));
     this.raycaster = markRaw(new Raycaster());
     this.mousePosition = markRaw(new Vector2());
@@ -201,7 +196,6 @@ export default class CameraPanel extends Vue {
     this.setMode(this.mode, false);
 
     this.unsubscribe = this.store.subscribe((mutation) => {
-      console.log(mutation.type);
       if (mutation.type.startsWith("document/")) {
         if (mutation.type === "document/setRenderModel") {
           this.reset();
@@ -247,10 +241,11 @@ export default class CameraPanel extends Vue {
     const middle = bbox.getCenter(new Vector3());
 
     // Use the bounding box to initialise the zoom on the camera
-    const zoom = Math.min(
-      this.sceneDiv.clientWidth / bbox.min.distanceTo(bbox.max),
-      this.sceneDiv.clientHeight / bbox.min.distanceTo(bbox.max)
-    );
+    const zoom =
+      Math.min(
+        this.sceneDiv.clientWidth / bbox.min.distanceTo(bbox.max),
+        this.sceneDiv.clientHeight / bbox.min.distanceTo(bbox.max)
+      ) * 1.7;
 
     this.$emit("update:zoom", zoom);
 

@@ -8,6 +8,7 @@ import {
   Line3,
   PlaneHelper,
   Ray,
+  Triangle,
   Vector3
 } from "three";
 import LdrColor from "./files/LdrColor";
@@ -21,7 +22,7 @@ interface HitTest {
 class Node {
   private readonly tempVector = new Vector3();
 
-  private readonly nodes: (Node | null)[] = [
+  public readonly nodes: (Node | null)[] = [
     null,
     null,
     null,
@@ -31,8 +32,8 @@ class Node {
     null,
     null
   ];
-  private readonly box: Box3;
-  private readonly parts: PartDrawList[] | null;
+  public readonly box: Box3;
+  public readonly parts: PartDrawList[] | null;
 
   constructor(box: Box3, parts: PartDrawList[]) {
     this.box = box;
@@ -256,39 +257,41 @@ export default class Octree {
 
         for (const [c, is] of part.triangleIndexesByColor) {
           const vertexBuffer = vertexBuffersByColor.get(c);
-          const vb = vertexBuffer!.array;
+          if (vertexBuffer) {
+            const vb = vertexBuffer.array;
 
-          for (let idx = 0; idx < is.length; idx += 3) {
-            const is1 = is[idx] * 3;
-            const is2 = is[idx + 1] * 3;
-            const is3 = is[idx + 2] * 3;
+            for (let idx = 0; idx < is.length; idx += 3) {
+              const is1 = is[idx] * 3;
+              const is2 = is[idx + 1] * 3;
+              const is3 = is[idx + 2] * 3;
 
-            this.v1.x = vb[is1];
-            this.v1.y = vb[is1 + 1];
-            this.v1.z = vb[is1 + 2];
+              this.v1.x = vb[is1];
+              this.v1.y = vb[is1 + 1];
+              this.v1.z = vb[is1 + 2];
 
-            this.v2.x = vb[is2];
-            this.v2.y = vb[is2 + 1];
-            this.v2.z = vb[is2 + 2];
+              this.v2.x = vb[is2];
+              this.v2.y = vb[is2 + 1];
+              this.v2.z = vb[is2 + 2];
 
-            this.v3.x = vb[is3];
-            this.v3.y = vb[is3 + 1];
-            this.v3.z = vb[is3 + 2];
+              this.v3.x = vb[is3];
+              this.v3.y = vb[is3 + 1];
+              this.v3.z = vb[is3 + 2];
 
-            if (
-              ray.intersectTriangle(
-                this.v1,
-                this.v2,
-                this.v3,
-                false,
-                this.target
-              ) !== null
-            ) {
-              const distanceSq = this.target.distanceToSquared(ray.origin);
+              if (
+                ray.intersectTriangle(
+                  this.v1,
+                  this.v2,
+                  this.v3,
+                  false,
+                  this.target
+                ) !== null
+              ) {
+                const distanceSq = this.target.distanceToSquared(ray.origin);
 
-              if (distanceSq < bestDistanceSq) {
-                bestDistanceSq = distanceSq;
-                result = part;
+                if (distanceSq < bestDistanceSq) {
+                  bestDistanceSq = distanceSq;
+                  result = part;
+                }
               }
             }
           }
@@ -339,7 +342,11 @@ export default class Octree {
 
     for (const [c, is] of part.triangleIndexesByColor) {
       const vertexBuffer = vertexBuffersByColor.get(c);
-      const vb = vertexBuffer!.array;
+      if (!vertexBuffer) {
+        continue;
+      }
+
+      const vb = vertexBuffer.array;
 
       for (let idx = 0; idx < is.length; idx += 3) {
         // If any of the points are inside the frustum then the
@@ -437,5 +444,287 @@ export default class Octree {
 
   public resetSelection(): void {
     this.root.resetSelection();
+  }
+
+  private areProjectionsSeparated(
+    p0: number,
+    p1: number,
+    p2: number,
+    q0: number,
+    q1: number,
+    q2: number
+  ): boolean {
+    const min_p = Math.min(p0, p1, p2),
+      max_p = Math.max(p0, p1, p2),
+      min_q = Math.min(q0, q1, q2),
+      max_q = Math.max(q0, q1, q2);
+
+    return min_p > max_q || max_p < min_q;
+  }
+
+  //https://forum.babylonjs.com/t/precise-mesh-intersection-detection/8444/4
+  //https://www.babylonjs-playground.com/#4TXNWN#7
+
+  // https://github.com/kenny-evitt/three-js-triangle-triangle-collision-detection/blob/master/collision-tests.js
+  private trianglesIntersect(t1: Triangle, t2: Triangle): boolean {
+    // Triangle 1:
+    const A0 = t1.a;
+    const A1 = t1.b;
+    const A2 = t1.c;
+
+    const E0 = A1.clone().sub(A0);
+    const E1 = A2.clone().sub(A0);
+
+    const E2 = E1.clone().sub(E0);
+
+    const N = E0.clone().cross(E1);
+
+    // Triangle 2:
+    const B0 = t2.a;
+    const B1 = t2.b;
+    const B2 = t2.c;
+
+    const F0 = B1.clone().sub(B0);
+    const F1 = B2.clone().sub(B0);
+
+    const F2 = F1.clone().sub(F0);
+
+    const M = F0.clone().cross(F1);
+
+    const D = B0.clone().sub(A0);
+
+    // Only potential separating axes for non-parallel and non-coplanar triangles are tested.
+
+    // Seperating axis: N
+    {
+      const p0 = 0,
+        p1 = 0,
+        p2 = 0,
+        q0 = N.dot(D),
+        q1 = q0 + N.dot(F0),
+        q2 = q0 + N.dot(F1);
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Separating axis: M
+    {
+      const p0 = 0,
+        p1 = M.dot(E0),
+        p2 = M.dot(E1),
+        q0 = M.dot(D),
+        q1 = q0,
+        q2 = q0;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E0 × F0
+    {
+      const p0 = 0,
+        p1 = 0,
+        p2 = -N.dot(F0),
+        q0 = E0.clone().cross(F0).dot(D),
+        q1 = q0,
+        q2 = q0 + M.dot(E0);
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E0 × F1
+    {
+      const p0 = 0,
+        p1 = 0,
+        p2 = -N.dot(F1),
+        q0 = E0.clone().cross(F1).dot(D),
+        q1 = q0 - M.dot(E0),
+        q2 = q0;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E0 × F2
+    {
+      const p0 = 0,
+        p1 = 0,
+        p2 = -N.dot(F2),
+        q0 = E0.clone().cross(F2).dot(D),
+        q1 = q0 - M.dot(E0),
+        q2 = q1;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E1 × F0
+    {
+      const p0 = 0,
+        p1 = N.dot(F0),
+        p2 = 0,
+        q0 = E1.clone().cross(F0).dot(D),
+        q1 = q0,
+        q2 = q0 + M.dot(E1);
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E1 × F1
+    {
+      const p0 = 0,
+        p1 = N.dot(F1),
+        p2 = 0,
+        q0 = E1.clone().cross(F1).dot(D),
+        q1 = q0 - M.dot(E1),
+        q2 = q0;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E1 × F2
+    {
+      const p0 = 0,
+        p1 = N.dot(F2),
+        p2 = 0,
+        q0 = E1.clone().cross(F2).dot(D),
+        q1 = q0 - M.dot(E1),
+        q2 = q1;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E2 × F0
+    {
+      const p0 = 0,
+        p1 = N.dot(F0),
+        p2 = p1,
+        q0 = E2.clone().cross(F0).dot(D),
+        q1 = q0,
+        q2 = q0 + M.dot(E2);
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E2 × F1
+    {
+      const p0 = 0,
+        p1 = N.dot(F1),
+        p2 = p1,
+        q0 = E2.clone().cross(F1).dot(D),
+        q1 = q0 - M.dot(E2),
+        q2 = q0;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    // Seperating axis: E2 × F2
+    {
+      const p0 = 0,
+        p1 = N.dot(F2),
+        p2 = p1,
+        q0 = E2.clone().cross(F2).dot(D),
+        q1 = q0 - M.dot(E2),
+        q2 = q1;
+
+      if (this.areProjectionsSeparated(p0, p1, p2, q0, q1, q2)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private rayTriangleIntersect(
+    ray: Ray,
+    vertexBuffersByColor: Map<LdrColor, BufferAttribute>
+  ): Triangle | null {
+    let result: Triangle | null = null;
+    let bestDistanceSq = Infinity;
+
+    // Gather all the intersections
+    const hitTests: HitTest[] = [];
+    this.root.rayIntersect(ray, hitTests);
+
+    // Sort them by distance from the ray origin
+    hitTests.sort((a, b) => {
+      return a.distanceSq - b.distanceSq;
+    });
+
+    // Iterate the hit tests from the closest box to the furthest and test all
+    // the parts in the box.  Keep track of the part that has a hit closest
+    // to the ray origin and return it.
+    for (let i = 0; i < hitTests.length; i++) {
+      const hitTest = hitTests[i];
+
+      for (let j = hitTest.parts.length - 1; j >= 0; j--) {
+        const part = hitTest.parts[j];
+
+        for (const [c, is] of part.triangleIndexesByColor) {
+          const vertexBuffer = vertexBuffersByColor.get(c);
+          if (vertexBuffer) {
+            const vb = vertexBuffer.array;
+
+            for (let idx = 0; idx < is.length; idx += 3) {
+              const is1 = is[idx] * 3;
+              const is2 = is[idx + 1] * 3;
+              const is3 = is[idx + 2] * 3;
+
+              this.v1.x = vb[is1];
+              this.v1.y = vb[is1 + 1];
+              this.v1.z = vb[is1 + 2];
+
+              this.v2.x = vb[is2];
+              this.v2.y = vb[is2 + 1];
+              this.v2.z = vb[is2 + 2];
+
+              this.v3.x = vb[is3];
+              this.v3.y = vb[is3 + 1];
+              this.v3.z = vb[is3 + 2];
+
+              if (
+                ray.intersectTriangle(
+                  this.v1,
+                  this.v2,
+                  this.v3,
+                  false,
+                  this.target
+                ) !== null
+              ) {
+                const distanceSq = this.target.distanceToSquared(ray.origin);
+
+                if (distanceSq < bestDistanceSq) {
+                  bestDistanceSq = distanceSq;
+                  result = new Triangle(this.v1, this.v2, this.v3);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (result !== null) {
+        return result;
+      }
+    }
+
+    return result;
   }
 }

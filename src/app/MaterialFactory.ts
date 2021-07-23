@@ -55,7 +55,7 @@ export default class MaterialFactory {
       uniforms: uniforms,
       vertexShader: optionalLineVertexShader,
       fragmentShader: optionalLineFragmentShader,
-      transparent: false,
+      transparent: a != 1,
       visible: true
     });
   }
@@ -93,7 +93,7 @@ export default class MaterialFactory {
       uniforms: uniforms,
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      transparent: false,
+      transparent: a != 1,
       visible: true
     });
   }

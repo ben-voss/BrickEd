@@ -22,8 +22,12 @@ import storeFactory from "./store/storeFactory";
 import documentStateFactory, {
   DocumentState
 } from "./store/modules/DocumentState";
+import partsListStateFactory, {
+  PartsListState
+} from "./store/modules/PartsListState";
 import ColorManager from "./app/ColorManager";
 import RenderModelFactory from "./app/RenderModelFactory";
+import PartTreeFactory from "./app/partTree/partTreeFactory";
 
 declare global {
   interface Window {
@@ -41,11 +45,15 @@ container.bind(Symbols.LdrModelWriter).to(LdrModelWriter).inSingletonScope();
 container.bind(Symbols.Settings).to(Settings).inSingletonScope();
 container.bind(Symbols.ColorManager).to(ColorManager).inSingletonScope();
 container.bind(Symbols.RenderModelFactory).to(RenderModelFactory).inSingletonScope();
+container.bind(Symbols.PartTreeFactory).to(PartTreeFactory).inSingletonScope();
 
 container
   .bind<Store<AppState>>(Symbols.Store)
   .toDynamicValue((context: interfaces.Context) => {
-    return storeFactory(context.container.get(Symbols.DocumentState));
+    return storeFactory(
+      context.container.get(Symbols.DocumentState),
+      context.container.get(Symbols.PartsListState)
+    );
   })
   .inSingletonScope();
 
@@ -53,6 +61,13 @@ container
   .bind<Module<DocumentState, AppState>>(Symbols.DocumentState)
   .toDynamicValue(() => {
     return documentStateFactory();
+  })
+  .inSingletonScope();
+
+container
+  .bind<Module<PartsListState, AppState>>(Symbols.PartsListState)
+  .toDynamicValue((context: interfaces.Context) => {
+    return partsListStateFactory(context.container.get(Symbols.Api));
   })
   .inSingletonScope();
 

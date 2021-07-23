@@ -57,6 +57,7 @@ export default class RenderModel {
 
   // The entire 3D scene
   public readonly scene: Scene = new Scene();
+  public readonly newScene: Scene = new Scene();
 
   // The root group of the model.  This is shared with all the scene views that render the model
   private readonly group: Group = new Group();
@@ -677,7 +678,53 @@ export default class RenderModel {
 
     //this.group.add(this.octree.makeMesh());
 
+    //if (this.bspMesh) {
+    //  this.group.add(this.bspMesh);
+    //}
+
+    //if (this.csgMesh) {
+    //  this.group.add(this.csgMesh);
+    //}
+
     this.disposables.dispose();
+  }
+
+  private bspMesh: Mesh | undefined;
+  private csgMesh: Mesh | undefined;
+
+  public add(geometry: BufferGeometry): void {
+    const material = MaterialFactory.MakeMeshMaterial({
+      name: "",
+      code: 4,
+      value: 0xff0000,
+      edge: 4
+    });
+
+    const mesh = new Mesh(geometry, material);
+    mesh.matrixAutoUpdate = false; // This apparently makes things faster
+    mesh.frustumCulled = false; // This prevents the mesh from being tested against the frustum - which saves a lot of time.
+
+    this.bspMesh = mesh;
+/*
+    const group = new Group();
+    // Build the scene for the render model
+    this.newScene.background = new Color(0xcdd2e0); // color-20
+
+    this.newScene.add(group);
+
+    // Add ambient light
+    const light = new AmbientLight(0x808080); // soft white light
+    this.newScene.add(light);
+
+    // Initialise the root group
+    group.matrixAutoUpdate = false; // This apparently makes things faster
+
+    // Invert the y axis (-y is up)
+    group.applyMatrix4(this.yAxisInvert);
+
+    group.add(mesh);*/
+
+
   }
 
   public generateBoundingBoxMeshes(): Group {

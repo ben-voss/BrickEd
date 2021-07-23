@@ -15,6 +15,7 @@ import { inject, injectable } from "inversify";
 import { Symbols } from "@/di";
 import ColorManager from "./ColorManager";
 import { Matrix4, Vector3 } from "three";
+import { markRaw } from "vue";
 
 @injectable()
 export default class RenderModelFactory {
@@ -63,7 +64,7 @@ export default class RenderModelFactory {
       "Call to calculate bounding boxes took " + (t3 - t2) + " milliseconds."
     );
 
-    return new RenderModel(partDrawLists);
+    return markRaw(new RenderModel(partDrawLists));
   }
 
   private calculateBoundingBox(partDrawList: PartDrawList): void {

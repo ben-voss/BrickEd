@@ -41,7 +41,6 @@ export default class VertexManager {
   private tempVector: Vector3 = new Vector3();
 
   // All the vertices, grouped by color and a map to find positions of vertex values quickly
-  //private verticiesByColor = new Map<LdrColor, number[]>();
   private verticiesByColorMap = new Map<LdrColor, VertexMap>();
 
   private getOrMake(map: Map<LdrColor, number[]>, key: LdrColor): number[] {
