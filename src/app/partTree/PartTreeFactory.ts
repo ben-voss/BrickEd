@@ -14,7 +14,7 @@ import { Symbols } from "@/di";
 import ColorManager from "../ColorManager";
 import { Matrix4, Triangle, Vector3 } from "three";
 import TrianglePrimitive from "./trianglePrimitive";
-import QuadPrimitive from "./XQuadPrimitive";
+import QuadPrimitive from "./QuadPrimitive";
 import OptionalLinePrimitive from "./optionalLinePrimitive";
 import LinePrimitive from "./linePrimitive";
 import PartReference from "./partReference";
