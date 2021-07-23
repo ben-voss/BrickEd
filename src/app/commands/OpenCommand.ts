@@ -7,9 +7,7 @@ import LdrModelLoader from "../files/LdrModelLoader";
 import { Store } from "vuex";
 import AppState from "@/store/AppState";
 import RenderModelFactory from "../RenderModelFactory";
-import PartTreeFactory from "../partTree/partTreeFactory";
-import Bsp from "../bsp/Bsp";
-import { Group, Mesh, Scene } from "three";
+import PartTreeFactory from "../partTree/PartTreeFactory";
 import Csg from "../csg/Csg";
 import Polygon from "../csg/Polygon";
 
