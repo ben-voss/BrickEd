@@ -13,13 +13,13 @@ import { inject, injectable } from "inversify";
 import { Symbols } from "@/di";
 import ColorManager from "../ColorManager";
 import { Matrix4, Triangle, Vector3 } from "three";
-import TrianglePrimitive from "./trianglePrimitive";
+import TrianglePrimitive from "./TrianglePrimitive";
 import QuadPrimitive from "./QuadPrimitive";
-import OptionalLinePrimitive from "./optionalLinePrimitive";
-import LinePrimitive from "./linePrimitive";
-import PartReference from "./partReference";
-import PartPrimitives from "./partPrimitives";
-import Primitive from "./primitive";
+import OptionalLinePrimitive from "./OptionalLinePrimitive";
+import LinePrimitive from "./LinePrimitive";
+import PartReference from "./PartReference";
+import PartPrimitives from "./PartPrimitives";
+import Primitive from "./Primitive";
 
 @injectable()
 export default class PartTreeFactory {
