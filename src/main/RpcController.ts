@@ -4,6 +4,8 @@ import util from "util";
 import { app, BrowserWindow, dialog } from "electron";
 import path from "path";
 import MessageBoxOptions from "@/api/MessageBoxOptions";
+import { DispatchOptions, Store } from "vuex";
+import MainState from "./store/MainState";
 
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
@@ -11,8 +13,11 @@ const fileExistsAsync = util.promisify(fs.exists);
 
 export default class RpcController {
   private rpcServer: RpcServer;
+  private store: Store<MainState>;
 
-  constructor() {
+  constructor(store: Store<MainState>) {
+    this.store = store;
+
     // Setup the RPC server
     const functions = {
       messageBox: async (
@@ -32,13 +37,26 @@ export default class RpcController {
         browserWindow: BrowserWindow,
         fileName: string
       ) => await this.setRepresentedFilename(browserWindow, fileName),
-      readFileAsync: async (browserWindow: BrowserWindow, fileName: string) =>
+      readFileAsync: async (_: BrowserWindow, fileName: string) =>
         (await readFileAsync(fileName)).toString(),
-      fileExistsAsync: async (browserWindow: BrowserWindow, fileName: string) =>
-        await fileExistsAsync(fileName)
+      fileExistsAsync: async (_: BrowserWindow, fileName: string) =>
+        await fileExistsAsync(fileName),
+      dispatch: async (
+        _: BrowserWindow,
+        type: string,
+        payload?: any,
+        options?: DispatchOptions
+      ) => await this.dispatch(type, payload, options),
+      getState: async (_: BrowserWindow): Promise<MainState> =>
+        await this.getState()
     };
 
     this.rpcServer = new RpcServer(functions, "MAIN");
+
+    // Send mutations from the Vuex store to every listening window process
+    store.subscribe((mutation) => {
+      this.rpcServer.onCommit(mutation);
+    });
   }
 
   private async setRepresentedFilename(
@@ -100,5 +118,17 @@ export default class RpcController {
     const response = await dialog.showMessageBox(browserWindow, options);
 
     return response.response;
+  }
+
+  private async dispatch(
+    type: string,
+    payload?: any,
+    options?: DispatchOptions
+  ): Promise<any> {
+    return this.store.dispatch(type, payload, options);
+  }
+
+  private async getState(): Promise<MainState> {
+    return this.store.state;
   }
 }

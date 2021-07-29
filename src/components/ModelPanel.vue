@@ -154,6 +154,12 @@ import { Matrix4 } from "three";
 import { Options, Vue } from "vue-class-component";
 import SvgIcon from "./SvgIcon.vue";
 import SplitPanel from "./SplitPanel/SplitPanel.vue";
+import { Action, State } from "s-vuex-class";
+import { Watch } from "vue-property-decorator";
+import { LazyInject, Symbols } from "@/di";
+import RenderModelFactory from "@/app/RenderModelFactory";
+import RenderModel from "@/app/RenderModel";
+import Model from "@/app/files/Model";
 
 class CameraState {
   public angle: Matrix4;
@@ -187,6 +193,28 @@ export default class SceneView extends Vue {
     new CameraState(CameraPanel.AngleTop),
     new CameraState(CameraPanel.AngleRight)
   ];
+
+  @LazyInject(Symbols.RenderModelFactory)
+  readonly renderModelFactory!: RenderModelFactory;
+
+  @State("model", { namespace: "document" })
+  readonly model!: Model[];
+
+  @Action("setRenderModel", { namespace: "render" })
+  setRenderModel!: (args: { renderModel: RenderModel }) => void;
+
+  @Watch("model", {
+    immediate: true
+  })
+  private async handleModelChanged(newValue: Model[]): Promise<void> {
+    var model = newValue[0];
+    if (!model) {
+      return;
+    }
+
+    const renderModel = await this.renderModelFactory.generate(model);
+    this.setRenderModel({ renderModel: renderModel });
+  }
 
   private handleFocus(cameraPanel: CameraPanel): void {
     this.focusedCamera = cameraPanel;

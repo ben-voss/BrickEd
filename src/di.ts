@@ -11,15 +11,17 @@ export const Symbols = {
   RpcClient: Symbol.for("RpcClient"),
   Api: Symbol.for("Api"),
   LdrColorLoader: Symbol.for("LdrColorLoader"),
-  LdrModelLoader: Symbol.for("LdrModelLoader"),
+  //LdrModelLoader: Symbol.for("LdrModelLoader"),
   LdrModelWriter: Symbol.for("LdrModelWriter"),
   Settings: Symbol.for("Settings"),
   Store: Symbol.for("Store"),
   DocumentState: Symbol.for("DocumentState"),
   PartsListState: Symbol.for("PartsListState"),
+  RenderState: Symbol.for("RenderState"),
+
   ColorManager: Symbol.for("ColorManager"),
   RenderModelFactory: Symbol.for("RenderModelFactory"),
-  PartTreeFactory: Symbol.for("PartTreeFactory"),
+  //PartTreeFactory: Symbol.for("PartTreeFactory"),
 
   OpenCommand: Symbol.for("OpenCommand"),
   SaveCommand: Symbol.for("SaveCommand")

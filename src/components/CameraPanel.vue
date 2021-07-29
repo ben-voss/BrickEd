@@ -147,16 +147,16 @@ export default class CameraPanel extends Vue {
   })
   public isActive!: boolean;
 
-  @State("renderModel", { namespace: "document" })
+  @State("renderModel", { namespace: "render" })
   private renderModel!: RenderModel;
 
-  @State("selection", { namespace: "document" })
+  @State("selection", { namespace: "render" })
   private selection!: PartDrawList[];
 
-  @Action("setSelection", { namespace: "document" })
+  @Action("setSelection", { namespace: "render" })
   private setSelection!: (args: { parts: PartDrawList[] }) => void;
 
-  @Action("moveParts", { namespace: "document" })
+  @Action("moveParts", { namespace: "render" })
   private moveParts!: (args: {
     parts: PartDrawList[];
     matrix: Matrix4;
@@ -196,8 +196,8 @@ export default class CameraPanel extends Vue {
     this.setMode(this.mode, false);
 
     this.unsubscribe = this.store.subscribe((mutation) => {
-      if (mutation.type.startsWith("document/")) {
-        if (mutation.type === "document/setRenderModel") {
+      if (mutation.type.startsWith("render/")) {
+        if (mutation.type === "render/setRenderModel") {
           this.reset();
         }
 

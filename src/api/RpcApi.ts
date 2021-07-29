@@ -1,6 +1,8 @@
 import { Symbols } from "@/di";
 import RpcClient from "@/rpc/RpcClient";
+import AppState from "@/store/AppState";
 import { inject, injectable } from "inversify";
+import { CommitOptions, DispatchOptions } from "vuex";
 import Api from "./Api";
 import FileInfo from "./FileInfo";
 import MessageBoxOptions from "./MessageBoxOptions";
@@ -43,5 +45,29 @@ export default class RpcApi implements Api {
 
   public fileExistsAsync(fileName: string): Promise<boolean> {
     return this.rpcClient.call("fileExistsAsync", fileName);
+  }
+
+  public dispatch(
+    type: string,
+    payload?: any,
+    options?: DispatchOptions
+  ): Promise<any> {
+    return this.rpcClient.call("dispatch", type, payload, options);
+  }
+
+  public onCommitAdd(
+    fn: (args: { type: string; payload?: any; options?: CommitOptions }) => void
+  ): void {
+    this.rpcClient.addEvent("commit", fn);
+  }
+
+  public onCommitDel(
+    fn: (args: { type: string; payload?: any; options?: CommitOptions }) => void
+  ): void {
+    this.rpcClient.removeEvent("commit", fn);
+  }
+
+  public getState(): Promise<AppState> {
+    return this.rpcClient.call("getState");
   }
 }

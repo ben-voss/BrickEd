@@ -1,5 +1,5 @@
 "use strict";
-
+import "reflect-metadata";
 import path from "path";
 import fs from "fs";
 import util from "util";
@@ -18,6 +18,13 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import WindowPromise from "./WindowPromise";
 import RpcController from "./RpcController";
+import storeFactory from "./store/storeFactory";
+import documentStateFactory from "./store/DocumentState";
+import partsListStateFactory from "./store/PartsListState";
+import LdrModelLoader from "@/app/files/LdrModelLoader";
+import Settings from "@/app/settings/Settings";
+import MainState from "./store/MainState";
+import { Store } from "vuex";
 
 const readFileAsync = util.promisify(fs.readFile);
 
@@ -29,14 +36,29 @@ declare let __static: string;
 export default class MainProcess {
   private windows = new Set<BrowserWindow>();
   private windowPromises = new Map<number, WindowPromise>();
-  private rpcController = new RpcController();
+  private rpcController: RpcController;
   private menuStates = new Map<number, Map<string, boolean>>();
+  private settings = new Settings();
+  private store: Store<MainState>;
+  private ldrModelLoader: LdrModelLoader;
 
   constructor() {
     // Scheme must be registered before the app is ready
     protocol.registerSchemesAsPrivileged([
       { scheme: "app", privileges: { secure: true, standard: true } }
     ]);
+
+    this.ldrModelLoader = new LdrModelLoader(this.settings);
+
+    // Create the vuex state shared by all renderer processes
+    this.store = storeFactory(
+      documentStateFactory(),
+      partsListStateFactory(this.ldrModelLoader)
+    );
+    this.rpcController = new RpcController(this.store);
+    this.ldrModelLoader.store = this.store;
+
+    this.store.dispatch("partsList/load");
 
     app.on("window-all-closed", () => this.handleWindowAllClosed());
     app.on("activate", () => this.handleActivate());
@@ -484,6 +506,15 @@ export default class MainProcess {
 
     // Send the file contents into the render process
     const content = (await contentPromise).toString();
-    window.webContents.send("menu.open", fileName, content);
+    //window.webContents.send("menu.open", fileName, content);
+
+    const modelPromise = this.ldrModelLoader.loadString(fileName, content);
+
+    this.store.dispatch("document/setIsDirty", { isDirty: false });
+    this.store.dispatch("document/setFileName", { fileName: fileName });
+    window.setRepresentedFilename(fileName);
+
+    const model = await modelPromise;
+    this.store.dispatch("document/setModel", { model: model });
   }
 }

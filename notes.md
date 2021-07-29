@@ -1,3 +1,5 @@
+https://github.com/vue-electron/vuex-electron
+
 Part Dictionary
 * Map of part name to part objects
 

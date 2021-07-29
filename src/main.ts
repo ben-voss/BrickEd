@@ -11,7 +11,6 @@ import RpcClient from "./rpc/RpcClient";
 import RpcApi from "./api/RpcApi";
 import LdrColorLoader from "./app/files/LdrColorLoader";
 import OpenCommand from "./app/commands/OpenCommand";
-import LdrModelLoader from "./app/files/LdrModelLoader";
 import Settings from "./app/settings/Settings";
 import LdrModelWriter from "./app/files/LdrModelWriter";
 import SaveCommand from "./app/commands/SaveCommand";
@@ -27,7 +26,7 @@ import partsListStateFactory, {
 } from "./store/modules/PartsListState";
 import ColorManager from "./app/ColorManager";
 import RenderModelFactory from "./app/RenderModelFactory";
-import PartTreeFactory from "./app/partTree/PartTreeFactory";
+import renderStateFactory, { RenderState } from "./store/modules/RenderState";
 
 declare global {
   interface Window {
@@ -40,19 +39,19 @@ container.bind(Symbols.RpcClient).toConstantValue(new RpcClient("MAIN"));
 
 container.bind(Symbols.Api).to(RpcApi).inSingletonScope();
 container.bind(Symbols.LdrColorLoader).to(LdrColorLoader).inSingletonScope();
-container.bind(Symbols.LdrModelLoader).to(LdrModelLoader).inSingletonScope();
 container.bind(Symbols.LdrModelWriter).to(LdrModelWriter).inSingletonScope();
 container.bind(Symbols.Settings).to(Settings).inSingletonScope();
 container.bind(Symbols.ColorManager).to(ColorManager).inSingletonScope();
 container.bind(Symbols.RenderModelFactory).to(RenderModelFactory).inSingletonScope();
-container.bind(Symbols.PartTreeFactory).to(PartTreeFactory).inSingletonScope();
 
 container
   .bind<Store<AppState>>(Symbols.Store)
   .toDynamicValue((context: interfaces.Context) => {
     return storeFactory(
       context.container.get(Symbols.DocumentState),
-      context.container.get(Symbols.PartsListState)
+      context.container.get(Symbols.PartsListState),
+      context.container.get(Symbols.RenderState),
+      context.container.get(Symbols.Api)
     );
   })
   .inSingletonScope();
@@ -66,8 +65,15 @@ container
 
 container
   .bind<Module<PartsListState, AppState>>(Symbols.PartsListState)
-  .toDynamicValue((context: interfaces.Context) => {
-    return partsListStateFactory(context.container.get(Symbols.Api));
+  .toDynamicValue(() => {
+    return partsListStateFactory();
+  })
+  .inSingletonScope();
+
+container
+  .bind<Module<RenderState, AppState>>(Symbols.RenderState)
+  .toDynamicValue(() => {
+    return renderStateFactory();
   })
   .inSingletonScope();
 

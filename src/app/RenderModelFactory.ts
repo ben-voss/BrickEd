@@ -6,7 +6,6 @@ import Model from "./files/Model";
 import MetaCommentCommand from "./files/MetaCommentCommand";
 import MetaCommand from "./files/MetaCommand";
 import MetaBfcCommand from "./files/MetaBfcCommand";
-import LdrModelLoader from "./files/LdrModelLoader";
 import LdrColor from "./files/LdrColor";
 import OptionalLineCommand from "./files/OptionalLineCommand";
 import RenderModel from "./RenderModel";
@@ -16,18 +15,20 @@ import { Symbols } from "@/di";
 import ColorManager from "./ColorManager";
 import { Matrix4, Vector3 } from "three";
 import { markRaw } from "vue";
+import AppState from "@/store/AppState";
+import { Store } from "vuex";
 
 @injectable()
 export default class RenderModelFactory {
-  private ldrModelLoader!: LdrModelLoader;
   private colorManager!: ColorManager;
+  private store: Store<AppState>;
 
   constructor(
-    @inject(Symbols.LdrModelLoader) ldrModelLoader: LdrModelLoader,
-    @inject(Symbols.ColorManager) colorManager: ColorManager
+    @inject(Symbols.ColorManager) colorManager: ColorManager,
+    @inject(Symbols.Store) store: Store<AppState>
   ) {
-    this.ldrModelLoader = ldrModelLoader;
     this.colorManager = colorManager;
+    this.store = store;
   }
 
   // https://www.ldraw.org/article/415
@@ -226,9 +227,8 @@ export default class RenderModelFactory {
 
         case 1: {
           const partCommand = command as PartCommand;
-          const part = this.ldrModelLoader.getPart(partCommand.file);
-
-          if (part === null) {
+          const part = this.store.state.document.modelCache[partCommand.file];
+          if (!part) {
             console.log("ERROR Missing Part - " + partCommand.file);
             continue;
           }

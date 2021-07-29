@@ -1,4 +1,6 @@
+import AppState from "@/store/AppState";
 import { MessageBoxOptions } from "electron";
+import { CommitOptions, Dispatch } from "vuex";
 import FileInfo from "./FileInfo";
 
 export default interface Api {
@@ -19,4 +21,16 @@ export default interface Api {
   readFileAsync(fileName: string): Promise<string>;
 
   fileExistsAsync(fileName: string): Promise<boolean>;
+
+  dispatch: Dispatch;
+
+  onCommitAdd(
+    fn: (args: { type: string; payload?: any; options?: CommitOptions }) => void
+  ): void;
+
+  onCommitDel(
+    fn: (args: { type: string; payload?: any; options?: CommitOptions }) => void
+  ): void;
+
+  getState(): Promise<AppState>;
 }

@@ -51,12 +51,10 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import LdrModelLoader from "@/app/files/LdrModelLoader";
 import RenderModelFactory from "@/app/RenderModelFactory";
 import Model from "@/app/files/Model";
 import PartPanel from "./PartPanel.vue";
 import LdrColorLoader from "@/app/files/LdrColorLoader";
-import * as THREE from "three";
 import LdrColor from "@/app/files/LdrColor";
 import RenderModel from "@/app/RenderModel";
 import { Watch } from "vue-property-decorator";
@@ -82,9 +80,6 @@ export default class PartLibraryPanel extends Vue {
 
   private searchText = "";
 
-  @LazyInject(Symbols.LdrModelLoader)
-  readonly ldrModelLoader!: LdrModelLoader;
-
   @LazyInject(Symbols.LdrColorLoader)
   readonly ldrColorLoader!: LdrColorLoader;
 
@@ -97,11 +92,17 @@ export default class PartLibraryPanel extends Vue {
   @State("parts", { namespace: "partsList" })
   readonly partIndex!: { [key: string]: PartInfo[] };
 
+  @State("selectedPart", { namespace: "partsList" })
+  readonly selectedPartModel!: Model;
+
   @Action("addPart", { namespace: "document" })
   addPart!: (args: { file: string }) => void;
 
   @Action("load", { namespace: "partsList" })
   load!: () => void;
+
+  @Action("selectPart", { namespace: "partsList" })
+  selectPart!: (args: { part: PartInfo; color: LdrColor }) => void;
 
   mounted(): void {
     this.load();
@@ -157,24 +158,11 @@ export default class PartLibraryPanel extends Vue {
       return;
     }
 
-    await this.ldrModelLoader.load(this.selectedPart[0].f + ".dat");
+    this.selectPart({ part: this.selectedPart[0], color: this.selectedColor });
+  }
 
-    if (!this.renderModelFactory) {
-      return;
-    }
-
-    const model: Model = {
-      file: "",
-      commands: [
-        {
-          lineType: 1,
-          color: { num: this.selectedColor.code },
-          matrix: new THREE.Matrix4().identity(),
-          file: this.selectedPart[0].f + ".dat"
-        }
-      ]
-    };
-
+  @Watch("selectedPartModel")
+  private async handleSelectedPartModelChange(model: Model): Promise<void> {
     this.renderModel = await this.renderModelFactory.generate(model);
   }
 

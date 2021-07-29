@@ -2,7 +2,7 @@ import LdrColor from "@/app/files/LdrColor";
 import Model from "@/app/files/Model";
 import PartInfo from "@/app/partIndex/PartInfo";
 import { Module } from "vuex";
-import AppState from "../AppState";
+import MainState from "./MainState";
 
 export interface DocumentState {
   isDirty: boolean;
@@ -15,7 +15,7 @@ export interface DocumentState {
 
 export default function documentStateFactory(): Module<
   DocumentState,
-  AppState
+  MainState
 > {
   return {
     namespaced: true,
@@ -39,6 +39,23 @@ export default function documentStateFactory(): Module<
       },
       addModelCache(state, args: { file: string; model: Model }): void {
         state.modelCache[args.file] = args.model;
+      }
+    },
+    actions: {
+      async setFileName(context, args: { fileName: string }): Promise<void> {
+        context.commit("setFileName", args.fileName);
+      },
+      async setIsDirty(context, args: { isDirty: boolean }): Promise<void> {
+        context.commit("setIsDirty", args.isDirty);
+      },
+      async setModel(context, args: { model: Model[] }): Promise<void> {
+        context.commit("setModel", args.model);
+      },
+      async addModelCache(
+        context,
+        args: { file: string; model: Model }
+      ): Promise<void> {
+        context.commit("addModelCache", args);
       }
     }
   };
