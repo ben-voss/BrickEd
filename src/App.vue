@@ -42,7 +42,7 @@ export default class App extends Vue {
       items: [
         {
           type: "layoutPanel",
-          title: "Panel A",
+          title: "Model",
           width: 10,
           slot: "ModelView"
         },
