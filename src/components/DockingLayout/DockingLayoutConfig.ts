@@ -3,5 +3,5 @@ import { DockingLayoutFloatingGroupConfig } from "./DockingLayoutFloatingGroupCo
 
 export interface DockingLayoutConfig {
   group: DockingLayoutGroupConfig;
-  floatingGroups: Array<DockingLayoutFloatingGroupConfig>;
+  floatingGroups: Array<DockingLayoutFloatingGroupConfig> | undefined;
 }

@@ -7,6 +7,10 @@ import { PanelProps } from "../Props/PanelProps";
 import { FloatingMove } from "./FloatingMove";
 import { FloatingActivate } from "./FloatingActivate";
 import { DockingLayoutData } from "../DockingLayoutData";
+import { LazyInject, Symbols } from "@/di";
+import Api from "@/api/Api";
+import { Rect } from "../Rect";
+import { DockingLayoutGroupConfig } from "../DockingLayoutGroupConfig";
 
 export class DockedMove extends Interaction {
   private _rootElement: HTMLDivElement;
@@ -22,6 +26,9 @@ export class DockedMove extends Interaction {
 
     this._rootElement = rootElement;
   }
+
+  @LazyInject(Symbols.Api)
+  readonly api!: Api;
 
   public moveCapture(
     data: DockingLayoutData,
@@ -85,6 +92,32 @@ export class DockedMove extends Interaction {
     panelBounds.left = x - this._captureXOffset;
     panelBounds.top = y - this._captureYOffset;
 
+    const layoutConfig = {
+      group: {
+        type: "layoutGroup",
+        orientation: "horizontal",
+        items: [panelProps],
+        width: 100,
+        height: 100
+      } as DockingLayoutGroupConfig,
+      floatingGroups: []
+    };
+
+    // Ensure the panel will fill the group
+    panelProps.width = 100;
+    panelProps.height = 100;
+
+    this.api.newWindow(panelBounds, layoutConfig);
+
+    // Clear the state
+    this._stack = null;
+    this._captureX = null;
+    this._captureY = null;
+    this._captureXOffset = null;
+    this._captureYOffset = null;
+
+    return this;
+/*
     // Create a floating group for the panel we are undocking
     const floatingGroupProps: FloatingGroupProps = {
       type: "floatingGroup",
@@ -135,7 +168,7 @@ export class DockedMove extends Interaction {
     this._captureXOffset = null;
     this._captureYOffset = null;
 
-    return nextInteraction;
+    return nextInteraction;*/
   }
 
   public moveHover(

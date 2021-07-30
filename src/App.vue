@@ -83,6 +83,14 @@ export default class App extends Vue {
   };
 
   async beforeMount(): Promise<void> {
+    var argv = (window as any).argv as string;
+    console.log(argv);
+
+    const layoutConfigIndex = argv.indexOf("--layoutConfig");
+    if (layoutConfigIndex > -1) {
+      this.config = JSON.parse(argv[layoutConfigIndex + 1]);
+    }
+
     // Indicate to the main process that the window is ready to receive IPC messages.
     window.ipcRenderer.send("READY");
   }

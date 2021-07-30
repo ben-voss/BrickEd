@@ -1,3 +1,5 @@
+import { DockingLayoutConfig } from "@/components/DockingLayout/DockingLayoutConfig";
+import { Rect } from "@/components/DockingLayout/Rect";
 import { Symbols } from "@/di";
 import RpcClient from "@/rpc/RpcClient";
 import AppState from "@/store/AppState";
@@ -69,5 +71,9 @@ export default class RpcApi implements Api {
 
   public getState(): Promise<AppState> {
     return this.rpcClient.call("getState");
+  }
+
+  public newWindow(bounds: Rect, layoutConfig: DockingLayoutConfig): Promise<void> {
+    return this.rpcClient.call("newWindow", bounds, layoutConfig);
   }
 }

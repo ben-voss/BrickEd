@@ -25,6 +25,8 @@ import LdrModelLoader from "@/app/files/LdrModelLoader";
 import Settings from "@/app/settings/Settings";
 import MainState from "./store/MainState";
 import { Store } from "vuex";
+import { Rect } from "@/components/DockingLayout/Rect";
+import { DockingLayoutConfig } from "@/components/DockingLayout/DockingLayoutConfig";
 
 const readFileAsync = util.promisify(fs.readFile);
 
@@ -55,7 +57,7 @@ export default class MainProcess {
       documentStateFactory(),
       partsListStateFactory(this.ldrModelLoader)
     );
-    this.rpcController = new RpcController(this.store);
+    this.rpcController = new RpcController(this, this.store);
     this.ldrModelLoader.store = this.store;
 
     this.store.dispatch("partsList/load");
@@ -401,12 +403,12 @@ export default class MainProcess {
 
     // Create the browser window.
     const window: BrowserWindow = new BrowserWindow({
-      x: x,
-      y: y,
+      x: Math.round(x),
+      y: Math.round(y),
       show: false,
       backgroundColor: "#191d28", // Copied from $color-3
-      width: width,
-      height: height,
+      width: Math.round(width),
+      height: Math.round(height),
       title: app.name,
       webPreferences: {
         // Use pluginOptions.nodeIntegration, leave this alone
@@ -416,7 +418,10 @@ export default class MainProcess {
         contextIsolation: false,
         //contextIsolation: !(process.env
         //  .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
-        preload
+        preload,
+        enableWebSQL: false,
+        spellcheck: false,
+        nativeWindowOpen: true
       }
     });
 
@@ -516,5 +521,114 @@ export default class MainProcess {
 
     const model = await modelPromise;
     this.store.dispatch("document/setModel", { model: model });
+  }
+
+  public newWindow(
+    parentWindow: BrowserWindow,
+    bounds: Rect,
+    layoutConfig: DockingLayoutConfig
+  ): Promise<BrowserWindow> {
+    const preload =
+      process.env.NODE_ENV === "development"
+        ? // eslint-disable-next-line no-undef
+          path.resolve(__static, "..", "src", "preload.js") // dev
+        : // eslint-disable-next-line no-undef
+          path.join(__dirname, "preload.js"); // prod
+
+    // The provided bounds are relative to the parent window so adjust to make them relative to the dekstop
+    const contentBounds = parentWindow.getContentBounds();
+
+    // Create the browser window.
+    const window: BrowserWindow = new BrowserWindow({
+      x: Math.round(contentBounds.x + bounds.left),
+      y: Math.round(contentBounds.y + bounds.top),
+      show: false,
+      backgroundColor: "#191d28", // Copied from $color-3
+      width: Math.round(bounds.width),
+      height: Math.round(bounds.height),
+      title: app.name,
+      center: false,
+      webPreferences: {
+        // Use pluginOptions.nodeIntegration, leave this alone
+        // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+        nodeIntegration: process.env
+          .ELECTRON_NODE_INTEGRATION as unknown as boolean,
+        contextIsolation: false,
+        preload,
+        enableWebSQL: false,
+        spellcheck: false,
+        nativeWindowOpen: true,
+        additionalArguments: ["--layoutConfig", JSON.stringify(layoutConfig)]
+      }
+    });
+
+    // Capture the webContents.id here so that it is passed into to the 'closed' event handler
+    // in the closures below.  This allows us to remove the menu states after the webContents has been
+    // destroyed.
+    const webContentsId = window.webContents.id;
+
+    // Keep a reference to the window so its not garbage collected until it is closed
+    this.windows.add(window);
+
+    // Keep a promise to resolve when the renderer process indicates its IPC handler is ready
+    const promise = new WindowPromise(window);
+    this.windowPromises.set(webContentsId, promise);
+
+    window.once("ready-to-show", () => {
+      window.show();
+    });
+
+    window.on("close", () => {
+      window.webContents.send("menu.close");
+    });
+
+    window.on("closed", () => {
+      // Cleanup the state for the window
+      this.menuStates.delete(webContentsId);
+      this.windows.delete(window);
+    });
+
+    window.on("focus", () => {
+      // Apply the recorded menu states to the main menu bar
+      const states = this.menuStates.get(webContentsId);
+      if (states) {
+        const mainMenu = Menu.getApplicationMenu();
+        if (mainMenu) {
+          for (const pair of states) {
+            const menuItem = mainMenu.getMenuItemById(pair[0]);
+            if (menuItem) {
+              menuItem.enabled = !pair[1];
+            }
+          }
+        }
+      }
+    });
+
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      window.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+      //if (!process.env.IS_TEST) {
+      //  window.webContents.openDevTools();
+      //}
+    } else {
+      // Load the index.html when not in development
+      window.loadURL("app://./index.html");
+    }
+
+    // Enable all the menus that need to be enabled when a window is created
+    const mainMenu = Menu.getApplicationMenu();
+    if (mainMenu) {
+      const saveMenuItem = mainMenu.getMenuItemById("save");
+      if (saveMenuItem !== null) {
+        saveMenuItem.enabled = false;
+      }
+
+      const saveAsMenuItem = mainMenu.getMenuItemById("saveAs");
+      if (saveAsMenuItem !== null) {
+        saveAsMenuItem.enabled = false;
+      }
+    }
+
+    return promise.promise;
   }
 }

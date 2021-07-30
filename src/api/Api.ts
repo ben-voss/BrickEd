@@ -1,3 +1,5 @@
+import { DockingLayoutConfig } from "@/components/DockingLayout/DockingLayoutConfig";
+import { Rect } from "@/components/DockingLayout/Rect";
 import AppState from "@/store/AppState";
 import { MessageBoxOptions } from "electron";
 import { CommitOptions, Dispatch } from "vuex";
@@ -33,4 +35,6 @@ export default interface Api {
   ): void;
 
   getState(): Promise<AppState>;
+
+  newWindow(bounds: Rect, layoutConfig: DockingLayoutConfig): Promise<void>;
 }

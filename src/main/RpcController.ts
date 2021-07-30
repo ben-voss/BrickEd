@@ -6,6 +6,9 @@ import path from "path";
 import MessageBoxOptions from "@/api/MessageBoxOptions";
 import { DispatchOptions, Store } from "vuex";
 import MainState from "./store/MainState";
+import MainProcess from "./MainProcess";
+import { Rect } from "@/components/DockingLayout/Rect";
+import { DockingLayoutConfig } from "@/components/DockingLayout/DockingLayoutConfig";
 
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
@@ -13,9 +16,11 @@ const fileExistsAsync = util.promisify(fs.exists);
 
 export default class RpcController {
   private rpcServer: RpcServer;
+  private main: MainProcess;
   private store: Store<MainState>;
 
-  constructor(store: Store<MainState>) {
+  constructor(main: MainProcess, store: Store<MainState>) {
+    this.main = main;
     this.store = store;
 
     // Setup the RPC server
@@ -48,7 +53,12 @@ export default class RpcController {
         options?: DispatchOptions
       ) => await this.dispatch(type, payload, options),
       getState: async (_: BrowserWindow): Promise<MainState> =>
-        await this.getState()
+        await this.getState(),
+      newWindow: async (
+        parentWindow: BrowserWindow,
+        bounds: Rect,
+        layoutConfig: DockingLayoutConfig
+      ) => await this.newWindow(parentWindow, bounds, layoutConfig)
     };
 
     this.rpcServer = new RpcServer(functions, "MAIN");
@@ -130,5 +140,13 @@ export default class RpcController {
 
   private async getState(): Promise<MainState> {
     return this.store.state;
+  }
+
+  private async newWindow(
+    parentWindow: BrowserWindow,
+    bounds: Rect,
+    layoutConfig: DockingLayoutConfig
+  ): Promise<void> {
+    this.main.newWindow(parentWindow, bounds, layoutConfig);
   }
 }
