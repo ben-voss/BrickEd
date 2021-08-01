@@ -344,7 +344,7 @@ export default class DockingLayout extends Vue implements DockingLayoutData {
     }
 
     const panelStack = this.hitTest(e.clientX, e.clientY);
-    if (!panelStack) {
+    if (!panelStack.length) {
       return;
     }
 
@@ -399,7 +399,7 @@ export default class DockingLayout extends Vue implements DockingLayoutData {
     } else {
       // Pointer is hovering - hit test to set the cursor
       const panelStack = this.hitTest(e.clientX, e.clientY);
-      if (!panelStack) {
+      if (!panelStack.length) {
         return;
       }
 
