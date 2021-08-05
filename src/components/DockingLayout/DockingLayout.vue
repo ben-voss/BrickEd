@@ -485,8 +485,8 @@ export default class DockingLayout extends Vue implements DockingLayoutData {
   display: block;
   box-sizing: content-box;
   background-color: magenta;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 .dockingLayoutShadow {
   display: block;

@@ -119,16 +119,17 @@ export default class TreeItem extends Vue {
 @import "@/styles/color.scss";
 
 .childItems {
-  color: $color-16;
+  color: $text-color;
 }
 .label {
   padding-bottom: 1px;
+  cursor: pointer;
 }
 .label-selected {
   padding-bottom: 1px;
-  background-color: $color-8;
+  background-color: $selection-highlight;
 }
 .label:hover {
-  background-color: $color-5;
+  background-color: $selection-hover;
 }
 </style>

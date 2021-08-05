@@ -177,20 +177,18 @@ export default class ModelView extends Vue {
 .modelView {
   width: 100%;
   height: 100%;
-  border: 1px solid $color-1;
   box-sizing: border-box;
 }
 .modelViewContent {
   width: 100%;
   height: 100%;
   overflow: scroll;
-  border: 3px solid $color-4;
   box-sizing: border-box;
 }
 .ul {
   padding-left: 2px;
   padding-right: 2px;
   padding-top: 2px;
-  color: $color-16;
+  color: $text-color;
 }
 </style>

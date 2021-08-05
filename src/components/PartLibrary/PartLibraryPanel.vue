@@ -32,7 +32,6 @@
             multiple
           >
             <option
-              class="partsListOption"
               v-for="part in parts"
               v-bind:value="part"
               :key="(part.iU === 't') + part.f"
@@ -215,7 +214,6 @@ export default class PartLibraryPanel extends Vue {
 
 .partLibraryPanel {
   height: 100%;
-  border: 1px solid $color-1;
   display: flex;
   flex-direction: column;
 }
@@ -246,46 +244,44 @@ export default class PartLibraryPanel extends Vue {
 
 .category {
   width: 100%;
-  border: 3px solid $color-4;
+  border: 2px solid $control-border;
   box-sizing: border-box;
-  background-color: $color-3;
-  color: $color-16;
+  background-color: $control-background;
+  color: $text-color;
   position: relative;
+  margin: 1px;
 }
 
 .category:focus {
   outline: none;
+  border: 2px solid $selection-highlight;
 }
 
 .search {
-  width: 50%;
-  border-top: none;
-  border-left: 3px solid $color-4;
-  border-right: 3px solid $color-4;
-  border-bottom: 3px solid $color-4;
+  width: 90%;
+  border: 2px solid $control-border;
   border-radius: 0%;
   box-sizing: border-box;
-  background-color: $color-3;
-  color: $color-16;
+  background-color: $control-background;
+  color: $text-color;
   padding-left: 4px;
   position: relative;
+  margin: 1px;
 }
 
 .search:focus {
   outline: none;
+  border: 2px solid $selection-highlight;
 }
 
 .partsList {
   width: 100%;
   height: 100%;
-  border-top: none;
-  border-left: 3px solid $color-4;
-  border-right: 3px solid $color-4;
-  border-bottom: 3px solid $color-4;
+  border: none;
   border-radius: 0%;
   box-sizing: border-box;
-  background-color: $color-3;
-  color: $color-16;
+  background-color: $panel-background;
+  color: $text-color;
   padding: 2px;
 }
 
@@ -293,10 +289,14 @@ export default class PartLibraryPanel extends Vue {
   outline: none;
 }
 
+option:checked {
+  outline: none;
+  background-color: $selection-highlight;
+}
+
 .model {
   height: 100%;
   width: 100%;
-  border: 3px solid $color-4;
   overflow: hidden;
 }
 

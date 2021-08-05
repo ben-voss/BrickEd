@@ -1,5 +1,31 @@
 <template>
-  <div v-on:ccontextMenu="$event.preventDefault()">
+  <div style="position: relative; height: 28px">
+    <div
+      class="titlebar"
+      style="
+        background-color: rgb(32, 46, 58);
+        color: rgb(204, 204, 204);
+        width: 100%;
+        height: 28px;
+      "
+    >
+      <div class="titlebar-drag-region"></div>
+      <div
+        class="window-title"
+        style="
+          zoom: 1;
+          position: absolute;
+          left: 50%;
+          transform: translate(-50%, 0px);
+          max-width: calc(100vw - 160px);
+        "
+      ></div>
+    </div>
+  </div>
+  <div
+    v-on:ccontextMenu="$event.preventDefault()"
+    style="height: calc(100vh - 28px)"
+  >
     <dockingLayout :config="config">
       <template v-slot:HelloWorld>
         <HelloWorld />
@@ -101,10 +127,42 @@ export default class App extends Vue {
 @import "@/styles/color.scss";
 * {
   user-select: none;
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: small;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.titlebar {
+  box-sizing: border-box;
+  padding: 0 70px;
+  overflow: hidden;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  zoom: 1;
+  line-height: 22px;
+  height: 22px;
+  width: 100%;
+  display: flex;
+  position: absolute;
+}
+.titlebar > .titlebar-drag-region {
+  top: 0;
+  left: 0;
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+.titlebar > .window-title {
+  flex: 0 1 auto;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: auto;
+  margin-right: auto;
 }
 ::-webkit-scrollbar {
   width: 5px;
@@ -118,12 +176,12 @@ export default class App extends Vue {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: $color-highlight-1;
+  background: $highlight-color;
   border: 0px solid transparent;
   border-radius: 50px;
 }
 ::-webkit-scrollbar-track {
-  background: $color-2;
+  background: $panel-background;
   border: 0px none #ffffff;
   border-radius: 53px;
 }

@@ -406,10 +406,11 @@ export default class MainProcess {
       x: Math.round(x),
       y: Math.round(y),
       show: false,
-      backgroundColor: "#191d28", // Copied from $color-3
+      backgroundColor: "#2c3947", // Copied from $app-background
       width: Math.round(width),
       height: Math.round(height),
       title: app.name,
+      titleBarStyle: "hidden",
       webPreferences: {
         // Use pluginOptions.nodeIntegration, leave this alone
         // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -543,11 +544,17 @@ export default class MainProcess {
       x: Math.round(contentBounds.x + bounds.left),
       y: Math.round(contentBounds.y + bounds.top),
       show: false,
-      backgroundColor: "#191d28", // Copied from $color-3
+      backgroundColor: "#2c3947", // Copied from $app-background
       width: Math.round(bounds.width),
       height: Math.round(bounds.height),
       title: app.name,
       center: false,
+      useContentSize: true,
+      resizable: true,
+      fullscreenable: false,
+      skipTaskbar: true,
+      titleBarStyle: "hidden",
+      //roundedCorners: false,
       webPreferences: {
         // Use pluginOptions.nodeIntegration, leave this alone
         // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info

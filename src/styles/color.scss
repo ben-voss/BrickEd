@@ -1,4 +1,3 @@
-$color-0: #08090d;
 $color-1: #101219;
 $color-2: #181b26; // Borders & Scrollbar tracks
 $color-3: #191d28; // Background
@@ -25,3 +24,27 @@ $color-23: #f2f4f7;
 $color-24: #ffffff;
 
 $color-highlight-1: rgb(5, 145, 5);
+
+$color-a: rgb(32, 46, 58);
+$color-b: rgb(34, 48, 60);
+$color-c: rgb(36, 51, 64);
+$color-d: rgb(44, 57, 71);
+$color-e: rgb(42, 59, 75);
+$color-f: rgb(45, 63, 80);
+
+$text-color: rgb(199, 206, 214);
+$highlight-color: rgb(71, 166, 168);
+$hover-color: $color-f;
+
+$window-title-bar-color: $color-a;
+$panel-title-bar-color: $color-b;
+$app-background: $color-d;
+$render-background: $color-a;
+$panel-background: $color-c;
+$selection-highlight: $highlight-color; //$color-f;
+$selection-hover: $hover-color;
+$control-background: $color-c;
+$control-border: $color-e;
+
+$icon-color: $text-color;
+$icon-selected-color: $highlight-color;

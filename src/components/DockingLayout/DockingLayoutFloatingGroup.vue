@@ -81,7 +81,7 @@ export default class DockingLayoutFloatingGroup extends Vue {
   border-color: $color-6;
   border-width: 1px;
   border-style: solid;
-  background-color: $color-3;
+  background-color: $app-background;
   overflow: hidden;
 }
 </style>

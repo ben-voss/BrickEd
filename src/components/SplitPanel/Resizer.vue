@@ -31,7 +31,7 @@ export default class Resizer extends Vue {
     type: String,
     default: ""
   })
-  public resizerBorderColor!: string;
+  public resizerHoverColor!: string;
 
   @Prop({
     type: Number,
@@ -39,28 +39,10 @@ export default class Resizer extends Vue {
   })
   public resizerThickness!: number;
 
-  @Prop({
-    type: Number,
-    default: 1
-  })
-  public resizerBorderThickness!: number;
-
   public isMouseOver = false;
 
-  private get resizerTotalThickness(): number {
-    return this.resizerThickness + this.resizerBorderThickness * 2;
-  }
-
   private get margin(): number {
-    return Math.floor(this.resizerThickness / 2) + this.resizerBorderThickness;
-  }
-
-  private get rBorder(): { border1: string; border2: string } {
-    if (this.splitTo === "rows") {
-      return { border1: "top", border2: "bottom" };
-    } else {
-      return { border1: "left", border2: "right" };
-    }
+    return Math.floor(this.resizerThickness / 2);
   }
 
   public resStyle(): { [propName: string]: string } {
@@ -69,21 +51,18 @@ export default class Resizer extends Vue {
     tmpStyle["background-color"] = this.resizerColor;
 
     if (this.splitTo === "rows") {
-      tmpStyle.height = this.resizerTotalThickness + "px";
+      tmpStyle.height = this.resizerThickness + "px";
       tmpStyle.margin = `-${this.margin}px 0`;
-      tmpStyle.padding = `0 ${this.resizerBorderThickness}px`;
     } else {
-      tmpStyle.width = this.resizerTotalThickness + "px";
+      tmpStyle.width = this.resizerThickness + "px";
       tmpStyle.margin = `0 -${this.margin}px`;
-      tmpStyle.padding = this.resizerBorderThickness + "px 0";
     }
-this.isMouseOver = true;
-    const style =
-      (this.isMouseOver ? this.resizerBorderColor : "transparent") +
-      ` solid ${this.resizerBorderThickness}px`;
 
-    tmpStyle[`border-${this.rBorder.border1}`] = style;
-    tmpStyle[`border-${this.rBorder.border2}`] = style;
+    if (this.isMouseOver) {
+      tmpStyle["background-color"] = this.resizerHoverColor;
+    } else {
+      tmpStyle["background-color"] = this.resizerColor;
+    }
 
     return tmpStyle;
   }
@@ -95,7 +74,6 @@ this.isMouseOver = true;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  z-index: 10000;
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;

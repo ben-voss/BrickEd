@@ -32,6 +32,7 @@ import PartDrawList from "@/app/PartDrawList";
 import {
   Box2,
   Box3,
+  Color,
   DirectionalLight,
   Frustum,
   MathUtils,
@@ -40,6 +41,7 @@ import {
   OrthographicCamera,
   Quaternion,
   Raycaster,
+  Scene,
   Spherical,
   Vector2,
   Vector3,
@@ -580,11 +582,9 @@ export default class CameraPanel extends Vue {
   }
 
   private doRender(): void {
-    if (!this.renderModel) {
-      return;
-    }
+    const scene = this.renderModel ? this.renderModel.scene : new Scene();
 
-    const scene = this.renderModel.scene;
+    scene.background = new Color(0x202e3a);
 
     // Add a directional light at the camera origin
     this.driectionalLight.position.copy(this.camera.position);

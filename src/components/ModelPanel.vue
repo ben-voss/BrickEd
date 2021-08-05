@@ -320,13 +320,12 @@ export default class SceneView extends Vue {
 
 .border {
   height: 100%;
-  border: 1px solid $color-1;
   display: flex;
   flex-direction: column;
 }
 
 .toolbar {
-  background-color: $color-4;
+  background-color: $panel-background;
   flex-grow: 0;
   flex-shrink: 1;
   flex-basis: auto;
@@ -339,14 +338,14 @@ export default class SceneView extends Vue {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
-  border: 3px solid $color-4;
   position: relative;
 }
 
 .icon-button {
   border: none;
-  background-color: $color-4;
+  background-color: $panel-background;
   margin: 4px;
+  cursor: pointer;
 }
 .icon-button:focus {
   outline: none;
@@ -354,10 +353,10 @@ export default class SceneView extends Vue {
 .icon {
   width: 22px;
   height: 22px;
-  color: $color-20;
+  color: $icon-color;
 }
 .icon-set {
-  color: $color-highlight-1;
+  color: $icon-selected-color;
 }
 .button-seperator {
   display: inline-block;

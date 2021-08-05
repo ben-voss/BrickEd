@@ -15,9 +15,8 @@
       v-if="allowResize"
       :splitTo="splitTo"
       :resizerColor="resizerColor"
-      :resizerBorderColor="resizerBorderColor"
       :resizerThickness="resizerThickness"
-      :resizerBorderThickness="resizerBorderThickness"
+      :resizerHoverColor="resizerHoverColor"
       :class="{
         rowsres: splitTo === 'rows',
         columnsres: splitTo === 'columns'
@@ -96,27 +95,21 @@ export default class SplitPanel extends Vue {
 
   @Prop({
     type: Number,
-    default: 2
+    default: 6
   })
   public resizerThickness!: number; //in px - width of the resizer
 
   @Prop({
     type: String,
-    default: "#AAA"
+    default: "#2c3947"
   })
   public resizerColor!: string; //  any css color - if you set transparency, it will afect the border too
 
   @Prop({
     type: String,
-    default: "rgba(0,0,0, 0.15)"
+    default: "#c7ced6"
   })
-  public resizerBorderColor!: string; // any css color - #FFF, rgb(0,0,0), rgba(0,0,0,0)
-
-  @Prop({
-    type: Number,
-    default: 3
-  })
-  public resizerBorderThickness!: number; // in px - border that forms the shadow
+  public resizerHoverColor!: string; //  any css color - if you set transparency, it will afect the border too
 
   private active = false;
   private position = 0;

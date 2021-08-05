@@ -72,15 +72,15 @@ export default class DockingLayoutPanel extends Vue {
 
 .panel {
   box-sizing: border-box;
-  border-color: $color-1;
-  border-width: 1px;
+  border-color: $app-background;
+  border-width: 3px;
   border-style: solid;
-  background-color: $color-3;
+  background-color: $panel-background;
 }
 .header {
-  color: $color-16;
-  background-color: $color-4;
-  border: 1px solid $color-1;
+  color: $text-color;
+  background-color: $panel-title-bar-color;
+  border: 0px solid $color-1;
   padding: 2px 2px 3px 2px;
   overflow: hidden;
   height: 15px;
@@ -98,7 +98,7 @@ export default class DockingLayoutPanel extends Vue {
   top: 3px;
   width: 14px;
   height: 14px;
-  border: 1px solid $color-3;
+  border: 0px solid $color-3;
 }
 .icon {
   position: absolute;

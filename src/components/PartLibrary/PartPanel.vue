@@ -9,7 +9,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import RenderModel from "@/app/RenderModel";
 import { Prop, Watch } from "vue-property-decorator";
 import { markRaw } from "@vue/reactivity";
-import { DirectionalLight, OrthographicCamera, WebGLRenderer } from "three";
+import { Color, DirectionalLight, OrthographicCamera, Scene, WebGLRenderer } from "three";
 
 @Options({})
 export default class PartPanel extends Vue {
@@ -123,11 +123,9 @@ export default class PartPanel extends Vue {
   }
 
   private doRender(): void {
-    if (!this.renderModel) {
-      return;
-    }
+    const scene = this.renderModel ? this.renderModel.scene : new Scene();
 
-    const scene = this.renderModel.scene;
+    scene.background = new Color(0x202e3a);
 
     // Add a directional light at the camera origin
     this.driectionalLight.position.copy(this.camera.position);

@@ -78,8 +78,6 @@ export default class RenderModel {
     this.partDrawLists = partDrawLists;
 
     // Build the scene for the render model
-    this.scene.background = new Color(0xcdd2e0); // color-20
-
     this.scene.add(this.group);
 
     // Add ambient light

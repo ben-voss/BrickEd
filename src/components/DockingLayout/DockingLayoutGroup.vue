@@ -149,7 +149,7 @@ export default class DockingLayoutGroup extends Vue {
   opacity: 0.5;
   box-sizing: border-box;
   border-color: $color-3;
-  border-width: 1px;
+  border-width: 0px;
   border-style: solid;
 }
 </style>
